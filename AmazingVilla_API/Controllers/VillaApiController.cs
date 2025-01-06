@@ -11,15 +11,29 @@ namespace AmazingVilla_API.Controllers
     public class VillaApiController : ControllerBase 
     {
         [HttpGet]
-        public IEnumerable<VillaDto> GetVillas()
+        public ActionResult<IEnumerable<VillaDto>> GetVillas()
         {
-            return VillaStore.villaList;
+            var listOfVillas = VillaStore.villaList;
+            return Ok(listOfVillas);
         }
 
-        [HttpGet("{id:int}")] 
-        public VillaDto GetVilla(int id)
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(VillaDto), 200)]
+        public ActionResult<VillaDto> GetVilla(int id)
         {
-            return VillaStore.villaList.FirstOrDefault(v => v.Id == id);
+            if (id == 0)
+            {
+                return BadRequest("Invalid id");
+            }
+
+            var villa = VillaStore.villaList.FirstOrDefault(v => v.Id == id);
+            if (villa == null)
+            {
+                return NotFound("Villa does not exist");
+            }
+
+            return Ok(villa);
         }
     }
 }
