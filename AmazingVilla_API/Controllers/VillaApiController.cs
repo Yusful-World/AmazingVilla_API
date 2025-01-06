@@ -11,6 +11,7 @@ namespace AmazingVilla_API.Controllers
     public class VillaApiController : ControllerBase 
     {
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<VillaDto>> GetVillas()
         {
             var listOfVillas = VillaStore.villaList;
@@ -19,6 +20,8 @@ namespace AmazingVilla_API.Controllers
 
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         //[ProducesResponseType(typeof(VillaDto), 200)]
         public ActionResult<VillaDto> GetVilla(int id)
         {
