@@ -1,4 +1,5 @@
-﻿using AmazingVilla_API.Dtos;
+﻿using AmazingVilla_API.Data;
+using AmazingVilla_API.Dtos;
 using AmazingVilla_API.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,14 +11,32 @@ namespace AmazingVilla_API.Controllers
     public class VillaApiController : ControllerBase 
     {
         [HttpGet]
-        public IEnumerable<VillaDto> GetVillas()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<VillaDto>> GetVillas()
         {
-            return new List<VillaDto>
+            var listOfVillas = VillaStore.villaList;
+            return Ok(listOfVillas);
+        }
+
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(typeof(VillaDto), 200)]
+        public ActionResult<VillaDto> GetVilla(int id)
+        {
+            if (id == 0)
             {
-                new VillaDto {Id = 1, Name = "BarBeach" },
-                new VillaDto {Id = 2, Name = "ElegusiBeach" },
-                new VillaDto {Id = 3, Name = "ElekoBeach" }
-            };
+                return BadRequest("Invalid id");
+            }
+
+            var villa = VillaStore.villaList.FirstOrDefault(v => v.Id == id);
+            if (villa == null)
+            {
+                return NotFound("Villa does not exist");
+            }
+
+            return Ok(villa);
         }
     }
 }
