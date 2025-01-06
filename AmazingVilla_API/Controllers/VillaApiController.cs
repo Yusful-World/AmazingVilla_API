@@ -1,4 +1,5 @@
-﻿using AmazingVilla_API.Dtos;
+﻿using AmazingVilla_API.Data;
+using AmazingVilla_API.Dtos;
 using AmazingVilla_API.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +13,13 @@ namespace AmazingVilla_API.Controllers
         [HttpGet]
         public IEnumerable<VillaDto> GetVillas()
         {
-            return new List<VillaDto>
-            {
-                new VillaDto {Id = 1, Name = "BarBeach" },
-                new VillaDto {Id = 2, Name = "ElegusiBeach" },
-                new VillaDto {Id = 3, Name = "ElekoBeach" }
-            };
+            return VillaStore.villaList;
+        }
+
+        [HttpGet("{id:int}")] 
+        public VillaDto GetVilla(int id)
+        {
+            return VillaStore.villaList.FirstOrDefault(v => v.Id == id);
         }
     }
 }
