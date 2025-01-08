@@ -78,7 +78,7 @@ namespace AmazingVilla_API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete("{id:int}", Name = "DeleteVilla")]
-        public IActionResult DeleteVilla(int id)
+        public IActionResult DeleteVilla([FromRoute] int id)
         {
             if (id == null)
             {
@@ -93,6 +93,31 @@ namespace AmazingVilla_API.Controllers
             }
 
             VillaStore.villaList.Remove(villa);
+
+            return NoContent();
+        }
+
+
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPut]
+        public IActionResult UpdateVilla(int id, [FromBody] VillaDto villaDto)
+        {
+            if (villaDto == null || id != villaDto.Id)
+            {
+                return BadRequest();
+            }
+
+            var existingVilla = VillaStore.villaList.FirstOrDefault(x => x.Id == id);
+            if (existingVilla == null)
+            {
+                return NotFound();
+            }
+
+            existingVilla.Name = villaDto.Name;
+            existingVilla.SqFeet = villaDto.SqFeet;
+            existingVilla.Occupancy = villaDto.Occupancy;
 
             return NoContent();
         }
