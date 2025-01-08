@@ -72,5 +72,29 @@ namespace AmazingVilla_API.Controllers
             
             return CreatedAtRoute("GetVilla", new { id = villaDto.Id }, villaDto);
         }
+
+
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpDelete("{id:int}", Name = "DeleteVilla")]
+        public IActionResult DeleteVilla(int id)
+        {
+            if (id == null)
+            {
+                return BadRequest(id);
+            }
+
+            var villa = VillaStore.villaList.FirstOrDefault(v => v.Id == id);
+            
+            if (villa == null)
+            {
+                return NotFound("Villa does not exist");
+            }
+
+            VillaStore.villaList.Remove(villa);
+
+            return NoContent();
+        }
     }
 }
