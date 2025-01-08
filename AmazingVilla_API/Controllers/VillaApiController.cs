@@ -1,6 +1,7 @@
 ﻿using AmazingVilla_API.Data;
 using AmazingVilla_API.Dtos;
 using AmazingVilla_API.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AmazingVilla_API.Controllers
@@ -101,7 +102,7 @@ namespace AmazingVilla_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPut]
+        [HttpPut("{id:int}", Name = "UpdateVilla")]
         public IActionResult UpdateVilla(int id, [FromBody] VillaDto villaDto)
         {
             if (villaDto == null || id != villaDto.Id)
@@ -118,6 +119,33 @@ namespace AmazingVilla_API.Controllers
             existingVilla.Name = villaDto.Name;
             existingVilla.SqFeet = villaDto.SqFeet;
             existingVilla.Occupancy = villaDto.Occupancy;
+
+            return NoContent();
+        }
+
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPatch("{id:int}", Name = "PartialUpdateVilla")]
+        public IActionResult PartialUpdateVilla(int id, JsonPatchDocument<VillaDto> patchVillaDto)
+        {
+            if (patchVillaDto == null || id == 0)
+            {
+                return BadRequest();
+            }
+
+            var existingVilla = VillaStore.villaList.FirstOrDefault(x => x.Id == id);
+            if (existingVilla == null)
+            {
+                return NotFound();
+            }
+
+            patchVillaDto.ApplyTo(existingVilla, ModelState);
+            
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             return NoContent();
         }
