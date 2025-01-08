@@ -18,14 +18,14 @@ namespace AmazingVilla_API.Controllers
             return Ok(listOfVillas);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name ="GetVilla")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         //[ProducesResponseType(typeof(VillaDto), 200)]
-        public ActionResult<VillaDto> GetVilla(int id)
+        public ActionResult<VillaDto> GetVilla([FromRoute] int id)
         {
-            if (id == 0)
+            if (id is 0)
             {
                 return BadRequest("Invalid id");
             }
@@ -37,6 +37,89 @@ namespace AmazingVilla_API.Controllers
             }
 
             return Ok(villa);
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<VillaDto> CreateVilla([FromBody] VillaDto villaDto)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
+
+            if (VillaStore.villaList.FirstOrDefault(v => v.Name.ToLower() == villaDto.Name.ToLower()) != null)
+            {
+                ModelState.AddModelError("CustomError", "Villa already exists");
+                return BadRequest(ModelState);
+            }
+
+            if (villaDto == null)
+            {
+                return BadRequest(villaDto);
+            }
+
+            if (villaDto.Id > 0)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            villaDto.Id = VillaStore.villaList.OrderByDescending(v => v.Id).FirstOrDefault().Id + 1;
+            VillaStore.villaList.Add(villaDto);
+            
+            return CreatedAtRoute("GetVilla", new { id = villaDto.Id }, villaDto);
+        }
+
+
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpDelete("{id:int}", Name = "DeleteVilla")]
+        public IActionResult DeleteVilla([FromRoute] int id)
+        {
+            if (id == null)
+            {
+                return BadRequest(id);
+            }
+
+            var villa = VillaStore.villaList.FirstOrDefault(v => v.Id == id);
+            
+            if (villa == null)
+            {
+                return NotFound("Villa does not exist");
+            }
+
+            VillaStore.villaList.Remove(villa);
+
+            return NoContent();
+        }
+
+
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPut]
+        public IActionResult UpdateVilla(int id, [FromBody] VillaDto villaDto)
+        {
+            if (villaDto == null || id != villaDto.Id)
+            {
+                return BadRequest();
+            }
+
+            var existingVilla = VillaStore.villaList.FirstOrDefault(x => x.Id == id);
+            if (existingVilla == null)
+            {
+                return NotFound();
+            }
+
+            existingVilla.Name = villaDto.Name;
+            existingVilla.SqFeet = villaDto.SqFeet;
+            existingVilla.Occupancy = villaDto.Occupancy;
+
+            return NoContent();
         }
     }
 }
