@@ -127,7 +127,7 @@ namespace AmazingVilla_API.Controllers
             }
 
             existingVilla.Name = villaDto.Name;
-            existingVilla.SqFeet = villaDto.SqFeet;
+            existingVilla.Sqft = villaDto.Sqft;
             existingVilla.Occupancy = villaDto.Occupancy;
 
             return NoContent();
