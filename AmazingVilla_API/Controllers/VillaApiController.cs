@@ -1,5 +1,6 @@
 ﻿using AmazingVilla_API.Data;
 using AmazingVilla_API.Dtos;
+using AmazingVilla_API.Logging;
 using AmazingVilla_API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,8 @@ namespace AmazingVilla_API.Controllers
     [ApiController]
     public class VillaApiController : ControllerBase 
     {
-        private readonly ILogger<VillaApiController> _logger;
-
-        public VillaApiController(ILogger<VillaApiController> logger)
+        private readonly ILogging _logger;
+        public VillaApiController(ILogging logger)
         {
             _logger = logger;
         }
@@ -23,7 +23,7 @@ namespace AmazingVilla_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<VillaDto>> GetVillas()
         {
-            _logger.LogInformation("Getting all Villas");
+            _logger.Log("Getting all Villas", "");
             var listOfVillas = VillaStore.villaList;
             return Ok(listOfVillas);
         }
@@ -37,7 +37,7 @@ namespace AmazingVilla_API.Controllers
         {
             if (id is 0)
             {
-                _logger.LogError($"{id} is not a valid id, pleasae input a valid id");
+                _logger.Log($"{id} is not a valid id, pleasae input a valid id", "error");
                 return BadRequest("Invalid id");
             }
 
