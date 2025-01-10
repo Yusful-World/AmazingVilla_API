@@ -11,10 +11,19 @@ namespace AmazingVilla_API.Controllers
     [ApiController]
     public class VillaApiController : ControllerBase 
     {
+        private readonly ILogger<VillaApiController> _logger;
+
+        public VillaApiController(ILogger<VillaApiController> logger)
+        {
+            _logger = logger;
+        }
+
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<VillaDto>> GetVillas()
         {
+            _logger.LogInformation("Getting all Villas");
             var listOfVillas = VillaStore.villaList;
             return Ok(listOfVillas);
         }
@@ -28,6 +37,7 @@ namespace AmazingVilla_API.Controllers
         {
             if (id is 0)
             {
+                _logger.LogError($"{id} is not a valid id, pleasae input a valid id");
                 return BadRequest("Invalid id");
             }
 
