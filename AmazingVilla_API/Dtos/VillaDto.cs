@@ -10,6 +10,6 @@ namespace AmazingVilla_API.Dtos
         [MaxLength(30)]
         public string Name { get; set; }
         public int Occupancy { get; set; }
-        public int SqFeet { get; set; }
+        public int SqFt { get; set; }
     }
 }
