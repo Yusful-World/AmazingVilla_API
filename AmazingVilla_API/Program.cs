@@ -18,7 +18,7 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<ILogging, LoggingV2>();
+//builder.Services.AddSingleton<ILogging, LoggingV2>();
 
 var app = builder.Build();
 
