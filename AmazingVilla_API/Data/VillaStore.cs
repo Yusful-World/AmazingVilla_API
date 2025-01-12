@@ -6,9 +6,9 @@ namespace AmazingVilla_API.Data
     {
         public static List<VillaDto> villaList = new List<VillaDto>
         {
-            new VillaDto {Id = 1, Name = "BarBeach", Occupancy = 50, Sqft = 100},
-                new VillaDto {Id = 2, Name = "ElegusiBeach", Occupancy = 60, Sqft = 100 },
-                new VillaDto { Id = 3, Name = "ElekoBeach", Occupancy = 70, Sqft = 100 }
+            new VillaDto {Name = "BarBeach", Occupancy = 50, Sqft = 100},
+                new VillaDto {Name = "ElegusiBeach", Occupancy = 60, Sqft = 100 },
+                new VillaDto { Name = "ElekoBeach", Occupancy = 70, Sqft = 100 }
         };
 
     }
